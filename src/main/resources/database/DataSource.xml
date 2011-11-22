@@ -1,0 +1,24 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="location" value="classpath:database.properties" />
+    </bean>
+
+    <!-- Data source for MySQL Database -->
+    <!--<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">-->
+        <!--<property name="driverClassName" value="${jdbc.Mysql.driverClassName}" />-->
+        <!--<property name="url" value="${jdbc.Mysql.url}" />-->
+        <!--<property name="username" value="${jdbc.Mysql.username}" />-->
+        <!--<property name="password" value="${jdbc.Mysql.password}" />-->
+    <!--</bean>-->
+
+    <!-- Data source for SQL Server Database -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${jdbc.SqlServer.driverClassName}" />
+        <property name="url" value="${jdbc.SqlServer.url}" />
+    </bean>
+
+</beans>
