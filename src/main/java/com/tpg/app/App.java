@@ -19,14 +19,19 @@ public class App
         // Get the mobile business object bean
         MyDAO myDAO = (MyDAO)applicationContext.getBean("myDao");
 
-        // Insert an artist and a track
-        Artist artist = new Artist("Armin", "van Buuren");
-        myDAO.insertArtist(artist);
+        // Insert 2 artists
+        Artist artist1 = new Artist("Armin", "van Buuren");
+        myDAO.insertArtist(artist1);
 
+        Artist artist2 = new Artist("Sophie", "Ellis Bextor");
+        myDAO.insertArtist(artist2);
+
+        // Insert a track belonging to both the artists
         Track track = new Track("Not giving up on love");
         myDAO.insertTrack(track);
 
-        // Map the track to the artist
-        myDAO.associateTrackToArtist(track,artist);
+        // Map the track to the artists
+        myDAO.associateTrackToArtist(track,artist1);
+        myDAO.associateTrackToArtist(track,artist2);
     }
 }
