@@ -18,7 +18,7 @@ import java.util.LinkedHashSet;
  * To change this template use File | Settings | File Templates.
  */
 
-@Repository("appDao")
+@Repository("applicationDao")
 public class ApplicationDAOImpl implements ApplicationDAO {
 
     @Autowired
@@ -271,5 +271,170 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 			}
 		}
         return tracks;
+    }
+
+    /**
+     * Returns the artist that has the id passed as a parameter.
+     * @param id : id of the artist to be retrieved.
+     * @return : Artist having the id equal tot the id passed as a parameter.
+     */
+    public Artist getArtistById(int id){
+        Artist artist = null;
+
+        try{
+            connection = dataSource.getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(" select A.first_name, A.last_name" +
+                                                    " from Artists A" +
+                                                    " where A.id = " + id + " ;");
+            if (rs.next()){
+                String firstName = rs.getString(1);
+                String lastName = rs.getString(1);
+                artist = new Artist(firstName, lastName);
+                artist.setId(id);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+			if (connection != null) {
+				try {
+				connection.close();
+				} catch (SQLException e) {}
+			}
+		}
+        return artist;
+    }
+
+    /**
+     * Returns the track that has the id passed as a parameter.
+     * @param id : id of the track to be retrieved.
+     * @return : Track having the id equal tot the id passed as a parameter.
+     */
+    public Track getTrackById(int id){
+        Track track = null;
+
+        try{
+            connection = dataSource.getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(" select T.title from Tracks T" +
+                                                    " where T.id = " + id + " ;");
+            if (rs.next()){
+                String title = rs.getString(1);
+                track = new Track(title);
+                track.setId(id);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+			if (connection != null) {
+				try {
+				connection.close();
+				} catch (SQLException e) {}
+			}
+		}
+        return track;
+    }
+
+    /**
+     * Deletes artist from the database.
+     * @param artist : artist to be deleted.
+     */
+    public void deleteArtist(Artist artist){
+        deleteArtistById(artist.getId());
+    }
+
+    /**
+     * Deletes track from the database.
+     * @param track : track to be deleted.
+     */
+    public void deleteTrack(Track track){
+        deleteTrackById(track.getId());
+    }
+
+    /**
+     * Deletes artist from the database.
+     * @param id : id of the artist to be deleted.
+     */
+    public void deleteArtistById(int id){
+        try{
+            connection = dataSource.getConnection();
+            Statement statement = connection.createStatement();
+            statement.executeQuery("delete from Artists A" +
+                                    " where A.id = " + id + " ;");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+			if (connection != null) {
+				try {
+				connection.close();
+				} catch (SQLException e) {}
+			}
+		}
+    }
+
+    /**
+     * Deletes track from the database.
+     * @param id : id of track to be deleted.
+     */
+    public void deleteTrackById(int id){
+        try{
+            connection = dataSource.getConnection();
+            Statement statement = connection.createStatement();
+            statement.executeQuery("delete from Tracks T" +
+                                    " where T.id = " + id + " ;");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+			if (connection != null) {
+				try {
+				connection.close();
+				} catch (SQLException e) {}
+			}
+		}
+    }
+
+    /**
+     * Updates the artist passed as a parameter with its current fields.
+     * @param artist : artist to be updated.
+     */
+    public void updateArtist(Artist artist){
+        try{
+            connection = dataSource.getConnection();
+            Statement statement = connection.createStatement();
+            statement.executeQuery("update Artists A" +
+                                    " set A.first_name = " + artist.getFirstName() +
+                                    ", A.last_name = "  + artist.getLastName() +
+                                    " where A.id = " + artist.getId() + " ;");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+			if (connection != null) {
+				try {
+				connection.close();
+				} catch (SQLException e) {}
+			}
+		}
+    }
+
+    /**
+     * Updates the track passed as a parameter with its current fields.
+     * @param track : track to be updated.
+     */
+    public void updateTrack(Track track){
+        try{
+            connection = dataSource.getConnection();
+            Statement statement = connection.createStatement();
+            statement.executeQuery("update Tracks T" +
+                                    " set T.title = " + track.getTitle()+
+                                    " where T.id = " + track.getId() + " ;");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+			if (connection != null) {
+				try {
+				connection.close();
+				} catch (SQLException e) {}
+			}
+		}
     }
 }

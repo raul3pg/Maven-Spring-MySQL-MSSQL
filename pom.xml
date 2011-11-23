@@ -4,11 +4,17 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.tpg</groupId>
-    <artifactId>DatabaseTutorials</artifactId>
+    <artifactId>Maven-Spring-MySQL-MSSQL</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
-    <name>DatabaseTutorials</name>
+    <version>1.1</version>
+    <name>Maven-Spring-MySQL-MSSQL</name>
+    <build><finalName>Track-Artist Application</finalName></build>
     <url>http://maven.apache.org</url>
+
+    <properties>
+        <spring.version>3.0.5.RELEASE</spring.version>
+        <spring-security.version>3.0.5.RELEASE</spring-security.version>
+    </properties>
 
     <dependencies>
 
@@ -41,11 +47,76 @@
             <version>2.5.6</version>
         </dependency>
 
-        <!-- Spring MVC -->
+
+        <!-- Spring framework & Spring MVC Core dependency start-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
-            <version>2.5.6</version>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.1.2</version>
+        </dependency>
+        <!-- Spring framework & Spring MVC Core dependency end-->
+
+
+        <!-- MVC Security -->
+        <dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>${spring-security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>${spring-security.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>${spring-security.version}</version>
+		</dependency>
+
+
+        <!-- Dependency for @PathVariable -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>3.0.5.RELEASE</version>
+        </dependency>
+
+        <!-- Validation -->
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.0.0.GA</version>
         </dependency>
 
     </dependencies>

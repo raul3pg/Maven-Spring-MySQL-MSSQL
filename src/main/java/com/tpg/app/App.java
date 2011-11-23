@@ -14,7 +14,7 @@ public class App
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("config/BeanLocations.xml");
 
         // Get the mobile business object bean
-        ApplicationDAO myDAO = (ApplicationDAO)applicationContext.getBean("appDao");
+        ApplicationDAO myDAO = (ApplicationDAO)applicationContext.getBean("applicationDao");
 
         // Insert 2 artists
         Artist artist1 = new Artist("Armin", "van Buuren");
