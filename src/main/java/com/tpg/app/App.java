@@ -1,13 +1,10 @@
 package com.tpg.app;
 
-import com.mysql.jdbc.Connection;
-import com.tpg.dao.MyDAO;
+import com.tpg.dao.ApplicationDAO;
 import com.tpg.model.Artist;
 import com.tpg.model.Track;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import java.sql.DriverManager;
 
 public class App
 {
@@ -17,7 +14,7 @@ public class App
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("config/BeanLocations.xml");
 
         // Get the mobile business object bean
-        MyDAO myDAO = (MyDAO)applicationContext.getBean("myDao");
+        ApplicationDAO myDAO = (ApplicationDAO)applicationContext.getBean("appDao");
 
         // Insert 2 artists
         Artist artist1 = new Artist("Armin", "van Buuren");

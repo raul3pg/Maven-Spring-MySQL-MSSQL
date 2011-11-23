@@ -1,6 +1,5 @@
 package com.tpg.dao;
 
-import com.sun.org.apache.xalan.internal.xsltc.compiler.util.Type;
 import com.tpg.model.Artist;
 import com.tpg.model.Track;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +7,8 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.util.Collection;
+import java.util.LinkedHashSet;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,8 +18,8 @@ import java.sql.*;
  * To change this template use File | Settings | File Templates.
  */
 
-@Repository("myDao")
-public class MyDAOImpl implements MyDAO{
+@Repository("appDao")
+public class ApplicationDAOImpl implements ApplicationDAO {
 
     @Autowired
     private DataSource dataSource;
@@ -41,8 +42,8 @@ public class MyDAOImpl implements MyDAO{
             connection = dataSource.getConnection();
 
             CallableStatement statement = connection.prepareCall(" { call insert_artist(?,?,?) } ");
-            statement.setString(1, artist.getFirst_name());
-            statement.setString(2, artist.getLast_name());
+            statement.setString(1, artist.getFirstName());
+            statement.setString(2, artist.getLastName());
             statement.registerOutParameter(3, Types.NUMERIC);
             statement.execute();
             artist.setId(statement.getInt(3));
@@ -103,7 +104,7 @@ public class MyDAOImpl implements MyDAO{
             ResultSet rs = statement.executeQuery("select * from tracks_to_artists TA " +
                                                     "where TA.trackID = " + track.getId() + " " +
                                                     "and TA.artistID = " + artist.getId() + ";");
-            if (rs.next() == true){
+            if (rs.next()){
                 result = true;
             }
 
@@ -160,9 +161,9 @@ public class MyDAOImpl implements MyDAO{
             Statement statement = connection.createStatement();
 
             ResultSet rs = statement.executeQuery("select A.id from Artists A " +
-                                                    "where A.first_name = '" + artist.getFirst_name() + "' " +
-                                                    "and A.last_name = '" + artist.getLast_name() + "';");
-            if (rs.next() == true){
+                                                    "where A.first_name = '" + artist.getFirstName() + "' " +
+                                                    "and A.last_name = '" + artist.getLastName() + "';");
+            if (rs.next()){
                 id = rs.getInt(1);
             }
             artist.setId(id);
@@ -192,7 +193,7 @@ public class MyDAOImpl implements MyDAO{
 
             ResultSet rs = statement.executeQuery("select T.id from Tracks T " +
                                                     "where T.title = '" + track.getTitle() + "';");
-            if (rs.next() == true){
+            if (rs.next()){
                 id = rs.getInt(1);
             }
             track.setId(id);
@@ -207,5 +208,68 @@ public class MyDAOImpl implements MyDAO{
 			}
 		}
         return id;
+    }
+
+    /**
+     * Retrieves all the artists from the Database.
+     * @return : A collection of artists that are in the Database.
+     */
+    public Collection<Artist> getAllArtists(){
+        Collection<Artist> artists = new LinkedHashSet<Artist>();
+        Artist artist = null;
+
+        try{
+            connection = dataSource.getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(" select * from Artists ;");
+            while (rs.next()){
+                int id = rs.getInt(1);
+                String firstName = rs.getString(2);
+                String lastName = rs.getString(3);
+                artist = new Artist(firstName, lastName);
+                artist.setId(id);
+                artists.add(artist);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+			if (connection != null) {
+				try {
+				connection.close();
+				} catch (SQLException e) {}
+			}
+		}
+        return artists;
+    }
+
+    /**
+     * Retrieves all the tracks from the Database.
+     * @return : A collection of tracks that are in the Database.
+     */
+    public Collection<Track> getAllTracks(){
+        Collection<Track> tracks = new LinkedHashSet<Track>();
+        Track track = null;
+
+        try{
+            connection = dataSource.getConnection();
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(" select * from Tracks ;");
+            while (rs.next()){
+                int id = rs.getInt(1);
+                String title = rs.getString(2);
+                track = new Track(title);
+                track.setId(id);
+                tracks.add(track);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+			if (connection != null) {
+				try {
+				connection.close();
+				} catch (SQLException e) {}
+			}
+		}
+        return tracks;
     }
 }
