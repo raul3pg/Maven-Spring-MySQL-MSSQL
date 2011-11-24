@@ -9,6 +9,7 @@ package com.tpg.webmodel;
  */
 import com.tpg.model.Artist;
 
+import javax.validation.constraints.Pattern;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -25,10 +26,11 @@ public class BindableArtist {
     @XmlElement
     private int id;
 
-    @XmlElement
+    @XmlElement(name = "firstName")
+    @Pattern(regexp = "\\w+")
     private String firstName;
 
-    @XmlElement
+    @XmlElement(name = "lastName")
     private String lastName;
 
     public BindableArtist() { }

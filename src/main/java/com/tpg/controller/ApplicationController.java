@@ -44,10 +44,10 @@ public class ApplicationController {
      * Retrieves all the tracks.
      * @return : A collection of existing tracks.
      */
-    @RequestMapping(method = RequestMethod.GET)
-    public Collection<BindableTrack> getAllTracks(){
-        return BindableTrack.bindableTracks(applicationDAO.getAllTracks());
-    }
+//    @RequestMapping(method = RequestMethod.GET)
+//    public Collection<BindableTrack> getAllTracks(){
+//        return BindableTrack.bindableTracks(applicationDAO.getAllTracks());
+//    }
 
     /**
      *
@@ -67,7 +67,10 @@ public class ApplicationController {
      */
     @RequestMapping(value = "/artist/{artistId}", method = RequestMethod.GET)
     public String getArtist(@PathVariable Integer artistId, Model model){
-        Artist artist = applicationDAO.getArtistById(artistId);
+        Artist artist = null;
+        if (artistId != null){
+            artist = applicationDAO.getArtistById(artistId);
+        }
         if (artist != null){
             model.addAttribute(new BindableArtist(artist));
         }
@@ -95,14 +98,17 @@ public class ApplicationController {
      */
     @RequestMapping(value = "/track/{trackId}", method = RequestMethod.GET)
     public String getTrack(@PathVariable Integer trackId, Model model){
-        Track track = applicationDAO.getTrackById(trackId);
+        Track track = null;
+        if (trackId != null){
+            track = applicationDAO.getTrackById(trackId);
+        }
         if (track != null){
             model.addAttribute(new BindableTrack(track));
         }
         else{
             model.addAttribute(new BindableTrack());
         }
-        return "artist";
+        return "track";
     }
 
     /**

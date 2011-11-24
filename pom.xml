@@ -5,11 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.tpg</groupId>
     <artifactId>Maven-Spring-MySQL-MSSQL</artifactId>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
     <version>1.1</version>
     <name>Maven-Spring-MySQL-MSSQL</name>
     <build><finalName>Track-Artist Application</finalName></build>
     <url>http://maven.apache.org</url>
+
 
     <properties>
         <spring.version>3.0.5.RELEASE</spring.version>
@@ -30,7 +31,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.9</version>
+            <version>5.1.18</version>
         </dependency>
 
         <!-- Microsoft SQL Server dependency -->
@@ -38,13 +39,6 @@
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>sqljdbc4</artifactId>
             <version>3.0</version>
-        </dependency>
-
-        <!-- Spring framework -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring</artifactId>
-            <version>2.5.6</version>
         </dependency>
 
 
@@ -104,6 +98,37 @@
 			<version>${spring-security.version}</version>
 		</dependency>
 
+        <!-- MVC RESTful Web Services -->
+        <dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-oxm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+
+        <!-- MVC Database Integration -->
+        <dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>hsqldb</groupId>
+			<artifactId>hsqldb</artifactId>
+			<version>1.8.0.10</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+
 
         <!-- Dependency for @PathVariable -->
         <dependency>
@@ -112,13 +137,90 @@
             <version>3.0.5.RELEASE</version>
         </dependency>
 
-        <!-- Validation -->
+
+       <!-- Validator for annotation & MVC Server Validation-->
         <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>1.0.0.GA</version>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator-annotation-processor</artifactId>
+            <version>4.1.0.Final</version>
+        </dependency>
+        <dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.0.0.GA</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>4.0.2.GA</version>
+		</dependency>
+
+
+
+
+
+
+        <!-- MVC Rich Client Validation -->
+        <dependency>
+			<groupId>org.springframework.webflow</groupId>
+			<artifactId>spring-js</artifactId>
+			<version>2.1.1.RELEASE</version>
+		</dependency>
+
+
+        <!-- SLF4J dependencies start-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.6.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.6.3</version>
+        </dependency>
+        <!-- SLF4J dependencies end-->
+
+        <!-- Java byte code processor (Java Assist)-->
+        <dependency>
+            <groupId>javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.4.GA</version>
         </dependency>
 
+
+        <!-- Hibernate library dependency start -->
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>antlr</groupId>
+            <artifactId>antlr</artifactId>
+            <version>2.7.7</version>
+        </dependency>
+        <!-- Hibernate library dependency end -->
+
+        <!-- Log4j -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+        </dependency>
     </dependencies>
 
 </project>

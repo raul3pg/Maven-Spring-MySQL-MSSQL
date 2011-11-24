@@ -289,7 +289,7 @@ public class ApplicationDAOImpl implements ApplicationDAO {
                                                     " where A.id = " + id + " ;");
             if (rs.next()){
                 String firstName = rs.getString(1);
-                String lastName = rs.getString(1);
+                String lastName = rs.getString(2);
                 artist = new Artist(firstName, lastName);
                 artist.setId(id);
             }

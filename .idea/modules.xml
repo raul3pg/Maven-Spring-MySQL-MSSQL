@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/DatabaseTutorials.iml" filepath="$PROJECT_DIR$/DatabaseTutorials.iml" />
-      <module fileurl="file://$PROJECT_DIR$/DatabaseTutorials.iml" filepath="$PROJECT_DIR$/DatabaseTutorials.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Maven-Spring-MySQL-MSSQL.iml" filepath="$PROJECT_DIR$/Maven-Spring-MySQL-MSSQL.iml" />
     </modules>
   </component>
 </project>
