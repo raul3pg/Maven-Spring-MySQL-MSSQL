@@ -9,12 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,11 +38,11 @@ public class ApplicationController {
      * Retrieves all the artists.
      * @return : A collection of existing artists.
      */
+
     @RequestMapping(method = RequestMethod.GET)
     public Collection<BindableArtist> getAllArtists(){
         return BindableArtist.bindableArtists(applicationDAO.getAllArtists());
     }
-
     /**
      * Retrieves all the tracks.
      * @return : A collection of existing tracks.
@@ -126,10 +129,10 @@ public class ApplicationController {
      * @param artistId
      * @return
      */
-    @RequestMapping(value = "artist/{artistId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/artist/{artistId}", method = RequestMethod.DELETE)
     public String deleteArtist(@PathVariable Integer artistId){
         applicationDAO.deleteArtistById(artistId);
-        return "redirect:../../index";
+        return "redirect:../../";
     }
 
     /**
@@ -147,50 +150,59 @@ public class ApplicationController {
      * @param trackId
      * @return
      */
-    @RequestMapping(value = "track/{trackId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/track/{trackId}", method = RequestMethod.DELETE)
     public String deleteTrack(@PathVariable Integer trackId){
         applicationDAO.deleteTrackById(trackId);
-        return "redirect:../../index";
+        return "redirect:../../";
     }
 
     /**
      *
-     * @param bindableObject
+     * @param bindableArtist
      * @param bindingResult
      * @return
      */
-    public String save(@Valid Object bindableObject, BindingResult bindingResult){
+    @RequestMapping(value = "/addArtist",method = RequestMethod.POST)
+    public String saveArtist(@Valid BindableArtist bindableArtist, BindingResult bindingResult){
         if (bindingResult.hasErrors()){
-            if (bindableObject instanceof BindableArtist){
-                return "artist";
-            }
-            else{
-                return "track";
-            }
+            return "artist";
         }
-        if (bindableObject instanceof BindableArtist){
-            Artist artist = ((BindableArtist) bindableObject).asArtist();
-            Artist existentArtist = applicationDAO.getArtistById(artist.getId());
-            if (existentArtist != null){
-                existentArtist.setFirstName(artist.getFirstName());
-                existentArtist.setLastName(artist.getLastName());
-                applicationDAO.updateArtist(existentArtist);
-            }
-            else{
-                applicationDAO.insertArtist(artist);
-            }
+
+        Artist artist = bindableArtist.asArtist();
+        Artist existentArtist = applicationDAO.getArtistById(artist.getId());
+        if (existentArtist != null){
+            existentArtist.setFirstName(artist.getFirstName());
+            existentArtist.setLastName(artist.getLastName());
+            applicationDAO.updateArtist(existentArtist);
         }
         else{
-            Track track = ((BindableTrack) bindableObject).asTrack();
-            Track existentTrack = applicationDAO.getTrackById(track.getId());
-            if (existentTrack != null){
-                existentTrack.setTitle(track.getTitle());
-                applicationDAO.updateTrack(existentTrack);
-            }
-            else{
-                applicationDAO.insertTrack(track);
-            }
+            applicationDAO.insertArtist(artist);
         }
-        return "redirect:index";
+
+        return "redirect:../index";
+    }
+
+    /**
+     *
+     * @param bindableTrack
+     * @param bindingResult
+     * @return
+     */
+    @RequestMapping(value = "/addTrack", method = RequestMethod.POST)
+    public String saveTrack(@Valid BindableTrack bindableTrack, BindingResult bindingResult){
+        if (bindingResult.hasErrors()){
+            return "track";
+        }
+
+        Track track = bindableTrack.asTrack();
+        Track existentTrack = applicationDAO.getTrackById(track.getId());
+        if (existentTrack != null){
+            existentTrack.setTitle(track.getTitle());
+            applicationDAO.updateTrack(existentTrack);
+        }
+        else{
+            applicationDAO.insertTrack(track);
+        }
+        return "redirect:../index";
     }
 }

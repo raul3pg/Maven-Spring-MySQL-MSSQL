@@ -19,6 +19,12 @@ public class Artist {
         this.lastName = lastName;
     }
 
+    public Artist(int id, String firstName, String lastName) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
     public int getId() {
         return id;
     }

@@ -359,8 +359,8 @@ public class ApplicationDAOImpl implements ApplicationDAO {
         try{
             connection = dataSource.getConnection();
             Statement statement = connection.createStatement();
-            statement.executeQuery("delete from Artists A" +
-                                    " where A.id = " + id + " ;");
+            statement.executeQuery("delete from Artists" +
+                                    " where Artists.id = " + id + " ;");
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -380,8 +380,8 @@ public class ApplicationDAOImpl implements ApplicationDAO {
         try{
             connection = dataSource.getConnection();
             Statement statement = connection.createStatement();
-            statement.executeQuery("delete from Tracks T" +
-                                    " where T.id = " + id + " ;");
+            statement.executeQuery("delete from Tracks" +
+                                    " where Tracks.id = " + id + " ;");
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -401,10 +401,10 @@ public class ApplicationDAOImpl implements ApplicationDAO {
         try{
             connection = dataSource.getConnection();
             Statement statement = connection.createStatement();
-            statement.executeQuery("update Artists A" +
-                                    " set A.first_name = " + artist.getFirstName() +
-                                    ", A.last_name = "  + artist.getLastName() +
-                                    " where A.id = " + artist.getId() + " ;");
+            statement.executeQuery("update Artists" +
+                                    " set first_name = '" + artist.getFirstName() + "'," +
+                                    " last_name = '"  + artist.getLastName() + "'" +
+                                    " where Artists.id = " + artist.getId() + " ;");
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -424,9 +424,9 @@ public class ApplicationDAOImpl implements ApplicationDAO {
         try{
             connection = dataSource.getConnection();
             Statement statement = connection.createStatement();
-            statement.executeQuery("update Tracks T" +
-                                    " set T.title = " + track.getTitle()+
-                                    " where T.id = " + track.getId() + " ;");
+            statement.executeQuery("update Tracks" +
+                                    " set Tracks.title = '" + track.getTitle() + "'" +
+                                    " where Tracks.id = " + track.getId() + " ;");
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {

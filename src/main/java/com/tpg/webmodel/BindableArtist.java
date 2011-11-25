@@ -24,7 +24,7 @@ import java.util.LinkedHashSet;
 public class BindableArtist {
 
     @XmlElement
-    private int id;
+    private Integer id;
 
     @XmlElement(name = "firstName")
     @Pattern(regexp = "\\w+")
@@ -41,11 +41,11 @@ public class BindableArtist {
         this.lastName = artist.getLastName();
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -74,6 +74,9 @@ public class BindableArtist {
     }
 
     public Artist asArtist(){
-        return new Artist(firstName,lastName);
+        if (id != null)
+            return new Artist(id, firstName,lastName);
+        else
+            return new Artist(firstName, lastName);
     }
 }

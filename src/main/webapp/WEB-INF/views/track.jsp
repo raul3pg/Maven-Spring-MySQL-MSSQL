@@ -2,25 +2,41 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<script type="text/javascript" src="../../js/js.js"></script>
 
 
-<c:url var="formUrl" value="/track/"/>
+<html>
+    <head>
+        <script type="text/javascript">
+            function deleteTrack(id){
+                window.location = "/index/track/" + id + "/delete";
+            }
+            function returnToIndex(){
+                window.location = "/index";
+            }
+        </script>
+    </head>
 
-<c:if test="${not empty bindableTrack.id}">
-    <button onclick="deleteTrack(${bindableTrack.id})">
-        <spring:message code="button.delete"/>
-    </button>
-</c:if>
+    <body>
+        <form:form action="/index/addTrack" modelAttribute="bindableTrack">
+            <form:hidden path="id"/>
+            <ul>
+                <li>
+                    <label for="title"><spring:message code="heading.title"/></label>
+                    <form:input id="title" path="title"/>
+                    <form:errors path="title"/>
+                </li>
+            </ul>
+        <input id="submit" type="submit" value="<spring:message code="button.save"/>"/>
+        </form:form>
 
-<form:form action="${formUrl}" modelAttribute="bindableTrack">
-    <input id="submit" type="submit" value="<spring:message code="button.save"/>"/>
-    <form:hidden path="id"/>
-    <ul>
-        <li>
-            <label for="title"><spring:message code="heading.title"/></label>
-            <form:input id="title" path="title"/>
-            <form:errors path="title"/>
-        </li>
-    </ul>
-</form:form>
+        <c:if test="${not empty bindableTrack.id}">
+            <button onclick="deleteTrack(${bindableTrack.id})">
+                <spring:message code="button.delete"/>
+            </button>
+        </c:if>
+
+        <button onclick="returnToIndex()">
+            <spring:message code="button.return"/>
+        </button>
+    </body>
+</html>

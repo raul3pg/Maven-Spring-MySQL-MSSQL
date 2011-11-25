@@ -2,6 +2,7 @@ package com.tpg.webmodel;
 
 import com.tpg.model.Track;
 
+import javax.validation.constraints.Pattern;
 import javax.xml.bind.annotation.*;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -19,9 +20,10 @@ import java.util.LinkedHashSet;
 public class BindableTrack {
 
     @XmlElement
-    private int id;
+    private Integer id;
 
     @XmlElement
+    @Pattern(regexp = "\\w+")
     private String title;
 
     public BindableTrack() { }
@@ -31,11 +33,11 @@ public class BindableTrack {
         this.title = track.getTitle();
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -56,6 +58,9 @@ public class BindableTrack {
     }
 
     public Track asTrack(){
-        return new Track(title);
+        if (id != null)
+            return new Track(id, title);
+        else
+            return new Track(title);
     }
 }
