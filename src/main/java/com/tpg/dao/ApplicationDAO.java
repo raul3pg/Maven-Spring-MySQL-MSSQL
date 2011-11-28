@@ -2,6 +2,7 @@ package com.tpg.dao;
 
 import com.tpg.model.Artist;
 import com.tpg.model.Track;
+import com.tpg.model.TracksToArtist;
 
 import java.util.Collection;
 
@@ -24,6 +25,7 @@ public interface ApplicationDAO {
 
     public Collection<Artist> getAllArtists();
     public Collection<Track> getAllTracks();
+    public Collection<TracksToArtist> getAllTracksToArtists();
 
     public Artist getArtistById(int id);
     public Track getTrackById(int id);

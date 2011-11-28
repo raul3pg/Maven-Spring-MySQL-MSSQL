@@ -2,6 +2,7 @@ package com.tpg.dao;
 
 import com.tpg.model.Artist;
 import com.tpg.model.Track;
+import com.tpg.model.TracksToArtist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -23,6 +24,7 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 
     @Autowired
     private DataSource dataSource;
+
     private Connection connection;
 
     public void setDataSource(DataSource dataSource) {
@@ -271,6 +273,45 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 			}
 		}
         return tracks;
+    }
+
+    public Collection<TracksToArtist> getAllTracksToArtists() {
+        Collection<TracksToArtist> tracksToArtists = new LinkedHashSet<TracksToArtist>();
+        TracksToArtist tracksToArtist = null;
+
+        try{
+            connection = dataSource.getConnection();
+            Statement statement = connection.createStatement();
+            Collection<Artist> artists = getAllArtists();
+            for (Artist artist : artists){
+                ResultSet rs = statement.executeQuery("select Tracks.id, Tracks.title" +
+                                                    " from Tracks_to_Artists" +
+                                                    " inner join Tracks on Tracks_to_Artists.trackID = Tracks.id" +
+                                                    " inner join Artists on Tracks_to_Artists.artistID = Artists.id" +
+                                                    " where Artists.id = " + artist.getId());
+
+                tracksToArtist = new TracksToArtist();
+                tracksToArtist.setArtist(artist);
+                while(rs.next()){
+                    int trackId = rs.getInt(1);
+                    String trackTitle = rs.getString(2);
+                    Track track = new Track(trackId, trackTitle);
+                    tracksToArtist.getTracks().add(track);
+                    tracksToArtists.add(tracksToArtist);
+                }
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }  finally {
+			if (connection != null) {
+				try {
+				connection.close();
+				} catch (SQLException e) {}
+			}
+		}
+        return tracksToArtists;
     }
 
     /**

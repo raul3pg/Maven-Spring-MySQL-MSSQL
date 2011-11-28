@@ -4,12 +4,12 @@ import com.tpg.dao.ApplicationDAOImpl;
 import com.tpg.model.Artist;
 import com.tpg.model.Track;
 import com.tpg.webmodel.BindableArtist;
+import com.tpg.webmodel.BindableTrackToArtist;
 import com.tpg.webmodel.BindableTrack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,28 +29,20 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/index")
-public class ApplicationController {
+public class IndexController {
 
     @Autowired
     private ApplicationDAOImpl applicationDAO;
 
-    /**
-     * Retrieves all the artists.
-     * @return : A collection of existing artists.
-     */
 
-    @RequestMapping(method = RequestMethod.GET)
-    public Collection<BindableArtist> getAllArtists(){
-        return BindableArtist.bindableArtists(applicationDAO.getAllArtists());
-    }
     /**
-     * Retrieves all the tracks.
-     * @return : A collection of existing tracks.
+     *
+     * @return
      */
-//    @RequestMapping(method = RequestMethod.GET)
-//    public Collection<BindableTrack> getAllTracks(){
-//        return BindableTrack.bindableTracks(applicationDAO.getAllTracks());
-//    }
+    @RequestMapping(method = RequestMethod.GET)
+    public Collection<BindableTrackToArtist> getAllPairs(){
+        return BindableTrackToArtist.bindableTracksToArtists(applicationDAO.getAllTracksToArtists());
+    }
 
     /**
      *
