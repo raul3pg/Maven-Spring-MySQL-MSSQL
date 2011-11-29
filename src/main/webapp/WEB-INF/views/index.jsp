@@ -14,10 +14,14 @@
                 window.location = "/index/track/new";
             }
 
-            function editSelectedTrack(){
-                element = document.getElementById("trackSelect");
-                window.location = "" + element.options[element.selectedIndex].value;
+            function redirectToEditTracks(){
+                window.location = "/tracks";
             }
+
+            function redirectToMap(){
+                window.location = "/map";
+            }
+
         </script>
         <link rel="stylesheet" type="text/css" href="<c:url value="../../css/style.css"/>"/>
     </head>
@@ -31,6 +35,14 @@
 
         <button onclick="redirectToAddTrack()">
             <spring:message code="button.add-track"/>
+        </button>
+
+        <button onclick="redirectToEditTracks()">
+            <spring:message code="button.edit-tracks"/>
+        </button>
+
+        <button onclick="redirectToMap()">
+            <spring:message code="button.map"/>
         </button>
 
         <table>
@@ -53,14 +65,11 @@
                         <td>
                             <select name="choice" style="width: 150px">
                                 <c:forEach var="track" items="${tracksToArtist.tracks}">
-                                    <option>
-                                        <c:out value="${track.title}" />
+                                    <option value="${track.id}">
+                                        ${track.title}
                                     </option>
                                 </c:forEach>
                             </select>
-                        </td>
-                        <td>
-                            <button><spring:message code="button.edit-track"/></button>
                         </td>
                     </tr>
                 </c:forEach>

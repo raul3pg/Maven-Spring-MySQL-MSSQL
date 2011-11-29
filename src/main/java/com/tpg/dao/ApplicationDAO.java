@@ -18,7 +18,7 @@ public interface ApplicationDAO {
     public void insertArtist(Artist artist);
     public void insertTrack(Track track);
 
-    public void associateTrackToArtist(Track track, Artist artist);
+    public void mapTrackToArtist(Track track, Artist artist);
 
     public int existsArtist(Artist artist);
     public int existsTrack(Track track);

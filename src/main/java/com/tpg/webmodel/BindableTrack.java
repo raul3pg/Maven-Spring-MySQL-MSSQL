@@ -23,7 +23,7 @@ public class BindableTrack {
     private Integer id;
 
     @XmlElement
-    @Pattern(regexp = "\\w+")
+    @Pattern(regexp = "\\w.*")
     private String title;
 
     public BindableTrack() { }
@@ -49,6 +49,11 @@ public class BindableTrack {
         this.title = title;
     }
 
+    /**
+     * Transform a collection of Tracks into a collection of BindableTracks.
+     * @param tracks : collection to be transformed.
+     * @return : Collection of BindableTracks.
+     */
     public static Collection<BindableTrack> bindableTracks (Collection<Track> tracks){
         Collection<BindableTrack> bindableTracks = new LinkedHashSet<BindableTrack>();
         for (Track track : tracks){

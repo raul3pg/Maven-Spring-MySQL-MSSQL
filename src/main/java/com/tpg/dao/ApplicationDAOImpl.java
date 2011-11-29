@@ -18,7 +18,6 @@ import java.util.LinkedHashSet;
  * Time: 3:00 PM
  * To change this template use File | Settings | File Templates.
  */
-
 @Repository("applicationDao")
 public class ApplicationDAOImpl implements ApplicationDAO {
 
@@ -26,10 +25,6 @@ public class ApplicationDAOImpl implements ApplicationDAO {
     private DataSource dataSource;
 
     private Connection connection;
-
-    public void setDataSource(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
 
     /**
      * Inserts an Artist into the Artists table from the database, using the "insert_artist" stored procedure.
@@ -56,7 +51,7 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 			if (connection != null) {
 				try {
 				connection.close();
-				} catch (SQLException e) {}
+				} catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
     }
@@ -85,7 +80,7 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 			if (connection != null) {
 				try {
 				connection.close();
-				} catch (SQLException e) {}
+				} catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
     }
@@ -116,7 +111,7 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 			if (connection != null) {
 				try {
 				connection.close();
-				} catch (SQLException e) {}
+				} catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
         return result;
@@ -128,9 +123,13 @@ public class ApplicationDAOImpl implements ApplicationDAO {
      * @param track : Track to be mapped to artist.
      * @param artist : Artist to be mapped to track.
      */
-    public void associateTrackToArtist(Track track, Artist artist) {
+    public void mapTrackToArtist(Track track, Artist artist) {
         try{
-            if ((existsTrack(track) == -1) || (existsArtist(artist) == -1) || (existsTrackToArtist(track, artist))){
+            if (
+                    (getTrackById(track.getId()) == null) ||
+                    (getArtistById(artist.getId()) == null) ||
+                    (existsTrackToArtist(track, artist))
+                ){
                 return;
             }
             connection = dataSource.getConnection();
@@ -146,7 +145,7 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 			if (connection != null) {
 				try {
 				connection.close();
-				} catch (SQLException e) {}
+				} catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
     }
@@ -161,10 +160,17 @@ public class ApplicationDAOImpl implements ApplicationDAO {
         try{
             connection = dataSource.getConnection();
             Statement statement = connection.createStatement();
+            ResultSet rs;
 
-            ResultSet rs = statement.executeQuery("select A.id from Artists A " +
+            if (artist.getLastName() == null){
+                rs = statement.executeQuery("select A.id from Artists A " +
+                                                    "where A.first_name = '" + artist.getFirstName() + "';");
+            }
+            else{
+                rs = statement.executeQuery("select A.id from Artists A " +
                                                     "where A.first_name = '" + artist.getFirstName() + "' " +
                                                     "and A.last_name = '" + artist.getLastName() + "';");
+            }
             if (rs.next()){
                 id = rs.getInt(1);
             }
@@ -176,7 +182,7 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 			if (connection != null) {
 				try {
 				connection.close();
-				} catch (SQLException e) {}
+				} catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
         return id;
@@ -206,7 +212,7 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 			if (connection != null) {
 				try {
 				connection.close();
-				} catch (SQLException e) {}
+				} catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
         return id;
@@ -218,7 +224,7 @@ public class ApplicationDAOImpl implements ApplicationDAO {
      */
     public Collection<Artist> getAllArtists(){
         Collection<Artist> artists = new LinkedHashSet<Artist>();
-        Artist artist = null;
+        Artist artist;
 
         try{
             connection = dataSource.getConnection();
@@ -238,7 +244,7 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 			if (connection != null) {
 				try {
 				connection.close();
-				} catch (SQLException e) {}
+				} catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
         return artists;
@@ -250,7 +256,7 @@ public class ApplicationDAOImpl implements ApplicationDAO {
      */
     public Collection<Track> getAllTracks(){
         Collection<Track> tracks = new LinkedHashSet<Track>();
-        Track track = null;
+        Track track;
 
         try{
             connection = dataSource.getConnection();
@@ -269,7 +275,7 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 			if (connection != null) {
 				try {
 				connection.close();
-				} catch (SQLException e) {}
+				} catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
         return tracks;
@@ -277,7 +283,7 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 
     public Collection<TracksToArtist> getAllTracksToArtists() {
         Collection<TracksToArtist> tracksToArtists = new LinkedHashSet<TracksToArtist>();
-        TracksToArtist tracksToArtist = null;
+        TracksToArtist tracksToArtist;
 
         try{
             connection = dataSource.getConnection();
@@ -292,23 +298,27 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 
                 tracksToArtist = new TracksToArtist();
                 tracksToArtist.setArtist(artist);
-                while(rs.next()){
-                    int trackId = rs.getInt(1);
-                    String trackTitle = rs.getString(2);
-                    Track track = new Track(trackId, trackTitle);
-                    tracksToArtist.getTracks().add(track);
+
+                if (rs.next()){
+                    do{
+                        int trackId = rs.getInt(1);
+                        String trackTitle = rs.getString(2);
+                        Track track = new Track(trackId, trackTitle);
+                        tracksToArtist.getTracks().add(track);
+                        tracksToArtists.add(tracksToArtist);
+                    } while (rs.next());
+                }
+                else{
                     tracksToArtists.add(tracksToArtist);
                 }
             }
-
-
         } catch (SQLException e) {
             e.printStackTrace();
         }  finally {
 			if (connection != null) {
 				try {
 				connection.close();
-				} catch (SQLException e) {}
+				} catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
         return tracksToArtists;
@@ -340,7 +350,7 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 			if (connection != null) {
 				try {
 				connection.close();
-				} catch (SQLException e) {}
+				} catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
         return artist;
@@ -370,7 +380,7 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 			if (connection != null) {
 				try {
 				connection.close();
-				} catch (SQLException e) {}
+				} catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
         return track;
@@ -408,7 +418,7 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 			if (connection != null) {
 				try {
 				connection.close();
-				} catch (SQLException e) {}
+				} catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
     }
@@ -429,7 +439,7 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 			if (connection != null) {
 				try {
 				connection.close();
-				} catch (SQLException e) {}
+				} catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
     }
@@ -452,7 +462,7 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 			if (connection != null) {
 				try {
 				connection.close();
-				} catch (SQLException e) {}
+				} catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
     }
@@ -474,7 +484,7 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 			if (connection != null) {
 				try {
 				connection.close();
-				} catch (SQLException e) {}
+				} catch (SQLException e) { e.printStackTrace(); }
 			}
 		}
     }

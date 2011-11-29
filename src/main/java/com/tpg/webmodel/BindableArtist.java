@@ -65,6 +65,11 @@ public class BindableArtist {
         this.lastName = lastName;
     }
 
+    /**
+     * Transform a collection of Artists into a collection of BindableArtists.
+     * @param artists : collection to be transformed.
+     * @return : Collection of BindableArtists.
+     */
     public static Collection<BindableArtist> bindableArtists(Collection<Artist> artists){
         Collection<BindableArtist> bindableArtists = new LinkedHashSet<BindableArtist>();
         for (Artist artist : artists){

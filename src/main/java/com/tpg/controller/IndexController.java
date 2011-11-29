@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -35,31 +33,16 @@ public class IndexController {
     private ApplicationDAOImpl applicationDAO;
 
 
-    /**
-     *
-     * @return
-     */
     @RequestMapping(method = RequestMethod.GET)
-    public Collection<BindableTrackToArtist> getAllPairs(){
+    public Collection<BindableTrackToArtist> getAllTracksToArtists(){
         return BindableTrackToArtist.bindableTracksToArtists(applicationDAO.getAllTracksToArtists());
     }
 
-    /**
-     *
-     * @param model
-     * @return
-     */
     @RequestMapping(value = "/artist/new", method = RequestMethod.GET)
     public String getArtist(Model model){
         return getArtist(null, model);
     }
 
-    /**
-     *
-     * @param artistId
-     * @param model
-     * @return
-     */
     @RequestMapping(value = "/artist/{artistId}", method = RequestMethod.GET)
     public String getArtist(@PathVariable Integer artistId, Model model){
         Artist artist = null;
@@ -75,22 +58,13 @@ public class IndexController {
         return "artist";
     }
 
-    /**
-     *
-     * @param model
-     * @return
-     */
+
     @RequestMapping(value = "/track/new", method = RequestMethod.GET)
     public String getTrack(Model model){
         return getTrack(null, model);
     }
 
-    /**
-     *
-     * @param trackId
-     * @param model
-     * @return
-     */
+
     @RequestMapping(value = "/track/{trackId}", method = RequestMethod.GET)
     public String getTrack(@PathVariable Integer trackId, Model model){
         Track track = null;
@@ -106,54 +80,33 @@ public class IndexController {
         return "track";
     }
 
-    /**
-     *
-     * @param artistId
-     * @return
-     */
+
     @RequestMapping(value = "/artist/{artistId}/delete", method = RequestMethod.GET)
     public String deleteArtistViaGet(@PathVariable Integer artistId){
         return deleteArtist(artistId);
     }
 
-    /**
-     *
-     * @param artistId
-     * @return
-     */
+
     @RequestMapping(value = "/artist/{artistId}", method = RequestMethod.DELETE)
     public String deleteArtist(@PathVariable Integer artistId){
         applicationDAO.deleteArtistById(artistId);
         return "redirect:../../";
     }
 
-    /**
-     *
-     * @param trackId
-     * @return
-     */
+
     @RequestMapping(value = "/track/{trackId}/delete", method = RequestMethod.GET)
     public String deleteTrackViaGet(@PathVariable Integer trackId){
         return deleteTrack(trackId);
     }
 
-    /**
-     *
-     * @param trackId
-     * @return
-     */
+
     @RequestMapping(value = "/track/{trackId}", method = RequestMethod.DELETE)
     public String deleteTrack(@PathVariable Integer trackId){
         applicationDAO.deleteTrackById(trackId);
         return "redirect:../../";
     }
 
-    /**
-     *
-     * @param bindableArtist
-     * @param bindingResult
-     * @return
-     */
+
     @RequestMapping(value = "/addArtist",method = RequestMethod.POST)
     public String saveArtist(@Valid BindableArtist bindableArtist, BindingResult bindingResult){
         if (bindingResult.hasErrors()){
@@ -174,12 +127,7 @@ public class IndexController {
         return "redirect:../index";
     }
 
-    /**
-     *
-     * @param bindableTrack
-     * @param bindingResult
-     * @return
-     */
+
     @RequestMapping(value = "/addTrack", method = RequestMethod.POST)
     public String saveTrack(@Valid BindableTrack bindableTrack, BindingResult bindingResult){
         if (bindingResult.hasErrors()){

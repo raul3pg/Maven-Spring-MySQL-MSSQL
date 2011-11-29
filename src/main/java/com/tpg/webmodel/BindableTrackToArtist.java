@@ -50,6 +50,11 @@ public class BindableTrackToArtist {
         this.tracks = tracks;
     }
 
+    /**
+     * Transform a collection of TrackToArtists into a collection of BindableTrackToArtists.
+     * @param tracksToArtists : collection to be transformed.
+     * @return : Collection of BindableTrackToArtists.
+     */
     public static Collection<BindableTrackToArtist> bindableTracksToArtists(Collection<TracksToArtist> tracksToArtists){
         Collection<BindableTrackToArtist> bindableTracksToArtists = new LinkedHashSet<BindableTrackToArtist>();
         for (TracksToArtist tracksToArtist : tracksToArtists){

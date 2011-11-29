@@ -17,18 +17,15 @@
     <body>
         <form:form action="/index/addArtist" modelAttribute="bindableArtist" >
             <form:hidden path="id"/>
-            <ul>
-                <li>
-                    <label for="firstName"><spring:message code="heading.firstName"/></label>
-                    <form:input id="firstName" path="firstName"/>
-                    <form:errors path="firstName"/>
-                </li>
-                <li>
-                    <label for="lastName"><spring:message code="heading.lastName"/></label>
-                    <form:input id="lastName" path="lastName"/>
-                    <form:errors path="lastName"/>
-                </li>
-            </ul>
+
+                <h3><spring:message code="heading.firstName"/></h3>
+                <form:input id="firstName" path="firstName"/>
+                <form:errors path="firstName"/>
+
+                <h3><spring:message code="heading.lastName"/></h3>
+                <form:input id="lastName" path="lastName"/>
+                <form:errors path="lastName"/>
+
             <input id="submit" type="submit" value="<spring:message code="button.save"/>"/>
         </form:form>
 
@@ -39,7 +36,7 @@
         </c:if>
 
         <button onclick="returnToIndex()">
-            <spring:message code="button.return"/>
+            <spring:message code="button.return-index"/>
         </button>
     </body>
 </html>
