@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Type;
 import java.sql.*;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -91,17 +92,18 @@ public class ApplicationDAOImpl implements ApplicationDAO {
      * @param artist : Artist to be checked for mapping with track.
      * @return : true, if tuple already exists; false, otherwise.
      */
-    private boolean existsTrackToArtist(Track track, Artist artist){
+    public boolean existsTrackToArtist(Track track, Artist artist){
         boolean result = false;
 
         try{
             connection = dataSource.getConnection();
-            Statement statement = connection.createStatement();
 
-            ResultSet rs = statement.executeQuery("select * from tracks_to_artists TA " +
-                                                    "where TA.trackID = " + track.getId() + " " +
-                                                    "and TA.artistID = " + artist.getId() + ";");
-            if (rs.next()){
+            CallableStatement statement = connection.prepareCall(" { call exists_trackToArtist(?,?,?) } ");
+            statement.setInt(1, artist.getId());
+            statement.setInt(2, track.getId());
+            statement.registerOutParameter(3, Types.NUMERIC);
+            statement.execute();
+            if (statement.getInt(3) > 0){
                 result = true;
             }
 
@@ -159,22 +161,20 @@ public class ApplicationDAOImpl implements ApplicationDAO {
         int id = -1;
         try{
             connection = dataSource.getConnection();
-            Statement statement = connection.createStatement();
-            ResultSet rs;
 
-            if (artist.getLastName() == null){
-                rs = statement.executeQuery("select A.id from Artists A " +
-                                                    "where A.first_name = '" + artist.getFirstName() + "';");
+            CallableStatement statement = connection.prepareCall(" { call exists_artist(?,?,?) } ");
+            statement.setString(1, artist.getFirstName());
+            if (artist.getLastName() != null){
+                statement.setString(2, artist.getLastName());
             }
             else{
-                rs = statement.executeQuery("select A.id from Artists A " +
-                                                    "where A.first_name = '" + artist.getFirstName() + "' " +
-                                                    "and A.last_name = '" + artist.getLastName() + "';");
+                statement.setNull(2, Types.VARCHAR);
             }
-            if (rs.next()){
-                id = rs.getInt(1);
+            statement.registerOutParameter(3, Types.NUMERIC);
+            statement.execute();
+            if (statement.getInt(3) != 0){
+                id = statement.getInt(3);
             }
-            artist.setId(id);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -197,14 +197,14 @@ public class ApplicationDAOImpl implements ApplicationDAO {
         int id = -1;
         try{
             connection = dataSource.getConnection();
-            Statement statement = connection.createStatement();
 
-            ResultSet rs = statement.executeQuery("select T.id from Tracks T " +
-                                                    "where T.title = '" + track.getTitle() + "';");
-            if (rs.next()){
-                id = rs.getInt(1);
+            CallableStatement statement = connection.prepareCall(" { call exists_track(?,?) } ");
+            statement.setString(1, track.getTitle());
+            statement.registerOutParameter(2, Types.NUMERIC);
+            statement.execute();
+            if (statement.getInt(2) != 0){
+                id = statement.getInt(2);
             }
-            track.setId(id);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -228,8 +228,11 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 
         try{
             connection = dataSource.getConnection();
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(" select * from Artists ;");
+
+            CallableStatement statement = connection.prepareCall(" { call getAllArtists } ");
+            statement.execute();
+            ResultSet rs = statement.getResultSet();
+
             while (rs.next()){
                 int id = rs.getInt(1);
                 String firstName = rs.getString(2);
@@ -260,8 +263,11 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 
         try{
             connection = dataSource.getConnection();
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(" select * from Tracks ;");
+
+            CallableStatement statement = connection.prepareCall(" { call getAllTracks } ");
+            statement.execute();
+            ResultSet rs = statement.getResultSet();
+
             while (rs.next()){
                 int id = rs.getInt(1);
                 String title = rs.getString(2);
@@ -287,14 +293,12 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 
         try{
             connection = dataSource.getConnection();
-            Statement statement = connection.createStatement();
+            CallableStatement statement = connection.prepareCall(" { call getAllTracksToArtist(?) } ");
             Collection<Artist> artists = getAllArtists();
             for (Artist artist : artists){
-                ResultSet rs = statement.executeQuery("select Tracks.id, Tracks.title" +
-                                                    " from Tracks_to_Artists" +
-                                                    " inner join Tracks on Tracks_to_Artists.trackID = Tracks.id" +
-                                                    " inner join Artists on Tracks_to_Artists.artistID = Artists.id" +
-                                                    " where Artists.id = " + artist.getId());
+                statement.setInt(1, artist.getId());
+                statement.execute();
+                ResultSet rs = statement.getResultSet();
 
                 tracksToArtist = new TracksToArtist();
                 tracksToArtist.setArtist(artist);
@@ -334,10 +338,11 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 
         try{
             connection = dataSource.getConnection();
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(" select A.first_name, A.last_name" +
-                                                    " from Artists A" +
-                                                    " where A.id = " + id + " ;");
+            CallableStatement statement = connection.prepareCall(" { call getArtistById(?) } ");
+            statement.setInt(1, id);
+            statement.execute();
+            ResultSet rs = statement.getResultSet();
+
             if (rs.next()){
                 String firstName = rs.getString(1);
                 String lastName = rs.getString(2);
@@ -366,9 +371,11 @@ public class ApplicationDAOImpl implements ApplicationDAO {
 
         try{
             connection = dataSource.getConnection();
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(" select T.title from Tracks T" +
-                                                    " where T.id = " + id + " ;");
+            CallableStatement statement = connection.prepareCall(" { call getTrackById(?) } ");
+            statement.setInt(1, id);
+            statement.execute();
+            ResultSet rs = statement.getResultSet();
+
             if (rs.next()){
                 String title = rs.getString(1);
                 track = new Track(title);
@@ -409,9 +416,10 @@ public class ApplicationDAOImpl implements ApplicationDAO {
     public void deleteArtistById(int id){
         try{
             connection = dataSource.getConnection();
-            Statement statement = connection.createStatement();
-            statement.executeQuery("delete from Artists" +
-                                    " where Artists.id = " + id + " ;");
+            CallableStatement statement = connection.prepareCall(" { call deleteArtistById(?) } ");
+            statement.setInt(1, id);
+            statement.execute();
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -430,9 +438,10 @@ public class ApplicationDAOImpl implements ApplicationDAO {
     public void deleteTrackById(int id){
         try{
             connection = dataSource.getConnection();
-            Statement statement = connection.createStatement();
-            statement.executeQuery("delete from Tracks" +
-                                    " where Tracks.id = " + id + " ;");
+            CallableStatement statement = connection.prepareCall(" { call deleteTrackById(?) } ");
+            statement.setInt(1, id);
+            statement.execute();
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -451,11 +460,12 @@ public class ApplicationDAOImpl implements ApplicationDAO {
     public void updateArtist(Artist artist){
         try{
             connection = dataSource.getConnection();
-            Statement statement = connection.createStatement();
-            statement.executeQuery("update Artists" +
-                                    " set first_name = '" + artist.getFirstName() + "'," +
-                                    " last_name = '"  + artist.getLastName() + "'" +
-                                    " where Artists.id = " + artist.getId() + " ;");
+            CallableStatement statement = connection.prepareCall(" { call updateArtist(?,?,?) } ");
+            statement.setInt(1, artist.getId());
+            statement.setString(2, artist.getFirstName());
+            statement.setString(3, artist.getLastName());
+            statement.execute();
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -474,10 +484,11 @@ public class ApplicationDAOImpl implements ApplicationDAO {
     public void updateTrack(Track track){
         try{
             connection = dataSource.getConnection();
-            Statement statement = connection.createStatement();
-            statement.executeQuery("update Tracks" +
-                                    " set Tracks.title = '" + track.getTitle() + "'" +
-                                    " where Tracks.id = " + track.getId() + " ;");
+            CallableStatement statement = connection.prepareCall(" { call updateTrack(?,?) } ");
+            statement.setInt(1, track.getId());
+            statement.setString(2, track.getTitle());
+            statement.execute();
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
